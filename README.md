@@ -2,14 +2,10 @@
 Scrapes Yahoo! Finance earnings calendar to get data for a specific date or a date range.
 
 ## Installation
-### Manual
-```sh
-cd yahoo_earnings_calendar
-python setup.py install
-pip install -r requirements.txt
-```
 ### Pip
-coming soon
+```sh
+pip install yahoo_earnings_calendar
+```
 
 ## Useage
 ```python
