@@ -1,7 +1,15 @@
-from distutils.core import setup
+try:
+    from setuptools import setup
+except ImportError:
+    from distutils.core import setup
+
 setup(
   name='yahoo_earnings_calendar',
   packages=['yahoo_earnings_calendar'],
+  install_requires=[
+      'lxml',
+      'requests'
+  ],
   version='0.1',
   description='Scrapes data from Yahoo! Finane earnings calendar',
   author='Wenbo Yu',
