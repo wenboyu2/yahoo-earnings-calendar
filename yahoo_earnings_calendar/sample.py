@@ -23,10 +23,23 @@ class YahooEarningsCalendar(object):
     def earnings_on(self, date):
         """Gets earnings calendar data from Yahoo! on a specific date.
         Args:
-            date: the date of earnings data to be fetched.
+            date: A datetime.date instance representing the date of earnings data to be fetched.
         Returns:
-            the earnigs calendar data of date given.
+            An array of earnigs calendar data on date given. E.g.,
+            [
+                {
+                    'date': '20160606',
+                    'symbol': 'ABIL',
+                    'time': 'Before Market Open'
+                },
+                ...
+            ]
+        Raises:
+            TypeError: When date is not a datetime.date object.
         """
+        if not isinstance(date, datetime.date):
+            raise TypeError(
+                'Date should be a datetime.date object')
         date_str = date.strftime('%Y%m%d')
         logger.debug('Fetching earnings data for %s', date_str)
         dated_url = BASE_URL + date_str + '.html'
@@ -34,7 +47,7 @@ class YahooEarningsCalendar(object):
         tree = html.fromstring(page.content)
         symbols = tree.xpath('//tr/td[2]/a/text()')
         times_str = tree.xpath('//tr/td[3]/small/text()')[1:]
-        if len(times_str) == 0:
+        if not len(times_str):
             times_str = tree.xpath('//tr/td[4]/small/text()')
         earnings_data = []
         for i in range(len(symbols)):
@@ -48,15 +61,29 @@ class YahooEarningsCalendar(object):
     def earnings_between(self, from_date, to_date):
         """Gets earnings calendar data from Yahoo! in a date range.
         Args:
-            from_date: the from date (inclusive).
-            to_date: the to date (inclusive).
+            from_date: A datetime.date instance representing the from-date (inclusive).
+            to_date: A datetime.date instance representing the to-date (inclusive).
         Returns:
-            the earnigs calendar data of date range.
+            An array of earnigs calendar data of date range. E.g.,
+            [
+                {
+                    'date': '20160606',
+                    'symbol': 'ABIL',
+                    'time': 'Before Market Open'
+                },
+                ...
+            ]
         Raises:
-            ValueError: if from_date is after to_date.
+            ValueError: When from_date is after to_date.
+            TypeError: When either from_date or to_date is not a datetime.date object.
         """
         if from_date > to_date:
-            raise ValueError('From-date should not be after to-date')
+            raise ValueError(
+                'From-date should not be after to-date')
+        if not (isinstance(from_date, datetime.date) and
+                isinstance(to_date, datetime.date)):
+            raise TypeError(
+                'From-date and to-date should be datetime.date objects')
         earnings_data = []
         current_date = from_date
         delta = datetime.timedelta(days=1)
@@ -66,6 +93,10 @@ class YahooEarningsCalendar(object):
         return earnings_data
 
 if __name__ == '__main__':
-    day = datetime.datetime.strptime('Jun 6 2016  1:33PM', '%b %d %Y %I:%M%p')
+    date_from = datetime.datetime.strptime(
+        'Jun 6 2016  10:00AM', '%b %d %Y %I:%M%p')
+    date_to = datetime.datetime.strptime(
+        'Jun 12 2016  1:00PM', '%b %d %Y %I:%M%p')
     yec = YahooEarningsCalendar()
-    print yec.earnings_on(day)
+    print yec.earnings_on(date_from)
+    print yec.earnings_between(date_from, date_to)
