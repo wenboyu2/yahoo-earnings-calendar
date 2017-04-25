@@ -19,13 +19,19 @@ date_to = datetime.datetime.strptime(
 yec = YahooEarningsCalendar()
 print yec.earnings_on(date_from)
 print yec.earnings_between(date_from, date_to)
-# [{'date': '20160606', 'symbol': 'ABIL', 'time': 'Before Market Open'}, ...]
 ```
 
+
 ## Data attributes
-- date: Integer
+- companyshortname: Company Name
   - e.g., 20160606
-- symbol: String
+- ticker: Ticker
   - e.g., AAPL
-- time: String
-  - e.g., 'Before Market Open', 'Time Not Supplied', '02:00 am ET' etc.
+- startdatetime: Event Start Time
+  - e.g., 2017-04-23T21:00:00.000-04:00
+- startdatetimetype: Event Start Time Type
+  - e.g., TAS (Time Not Supplied), AMC (After Market Close	)
+- epsestimate: EPS Estimate
+- epsactual: Reported EPS
+- epssurprisepct: Surprise (%)
+- gmtOffsetMilliSeconds: GMT Offset in MS

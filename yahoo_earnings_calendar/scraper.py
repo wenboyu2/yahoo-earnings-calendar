@@ -1,9 +1,10 @@
 import datetime
+import json
 import logging
 import requests
 from lxml import html
 
-BASE_URL = 'https://biz.yahoo.com/research/earncal/'
+BASE_URL = 'http://finance.yahoo.com/calendar/earnings'
 
 # Logging config
 logger = logging.getLogger()
@@ -25,12 +26,17 @@ class YahooEarningsCalendar(object):
         Args:
             date: A datetime.date instance representing the date of earnings data to be fetched.
         Returns:
-            An array of earnigs calendar data on date given. E.g.,
+            An array of earnings calendar data on date given. E.g.,
             [
                 {
-                    'date': '20160606',
-                    'symbol': 'ABIL',
-                    'time': 'Before Market Open'
+                    "ticker": "AMS.S",
+                    "companyshortname": "Ams AG",
+                    "startdatetime": "2017-04-23T20:00:00.000-04:00",
+                    "startdatetimetype": "TAS",
+                    "epsestimate": null,
+                    "epsactual": null,
+                    "epssurprisepct": null,
+                    "gmtOffsetMilliSeconds": 72000000
                 },
                 ...
             ]
@@ -40,23 +46,15 @@ class YahooEarningsCalendar(object):
         if not isinstance(date, datetime.date):
             raise TypeError(
                 'Date should be a datetime.date object')
-        date_str = date.strftime('%Y%m%d')
+        date_str = date.strftime('%Y-%m-%d')
         logger.debug('Fetching earnings data for %s', date_str)
-        dated_url = BASE_URL + date_str + '.html'
+        dated_url = '{0}?day={1}'.format(BASE_URL, date_str)
         page = requests.get(dated_url)
-        tree = html.fromstring(page.content)
-        symbols = tree.xpath('//tr/td[2]/a/text()')
-        times_str = tree.xpath('//tr/td[3]/small/text()')[1:]
-        if not len(times_str):
-            times_str = tree.xpath('//tr/td[4]/small/text()')
-        earnings_data = []
-        for i in range(len(symbols)):
-            earnings_data.append({
-                'symbol': symbols[i],
-                'time': times_str[i],
-                'date': date_str,
-            })
-        return earnings_data
+        page_content = page.content
+        page_data_string = [row for row in page_content.split('\n') if row.startswith('root.App.main = ')][0][:-1]
+        page_data_string = page_data_string.split('root.App.main = ', 1)[1]
+        page_data_dict = json.loads(page_data_string)
+        return page_data_dict['context']['dispatcher']['stores']['CalendarStore']['calResults']['data']['rows']
 
     def earnings_between(self, from_date, to_date):
         """Gets earnings calendar data from Yahoo! in a date range.
@@ -67,9 +65,14 @@ class YahooEarningsCalendar(object):
             An array of earnigs calendar data of date range. E.g.,
             [
                 {
-                    'date': '20160606',
-                    'symbol': 'ABIL',
-                    'time': 'Before Market Open'
+                    "ticker": "AMS.S",
+                    "companyshortname": "Ams AG",
+                    "startdatetime": "2017-04-23T20:00:00.000-04:00",
+                    "startdatetimetype": "TAS",
+                    "epsestimate": null,
+                    "epsactual": null,
+                    "epssurprisepct": null,
+                    "gmtOffsetMilliSeconds": 72000000
                 },
                 ...
             ]
@@ -94,9 +97,9 @@ class YahooEarningsCalendar(object):
 
 if __name__ == '__main__':
     date_from = datetime.datetime.strptime(
-        'Jun 6 2016  10:00AM', '%b %d %Y %I:%M%p')
+        'May 5 2017  10:00AM', '%b %d %Y %I:%M%p')
     date_to = datetime.datetime.strptime(
-        'Jun 12 2016  1:00PM', '%b %d %Y %I:%M%p')
+        'May 8 2017  1:00PM', '%b %d %Y %I:%M%p')
     yec = YahooEarningsCalendar()
     print yec.earnings_on(date_from)
     print yec.earnings_between(date_from, date_to)
