@@ -10,12 +10,12 @@ setup(
       'lxml',
       'requests'
   ],
-  version='0.1',
+  version='0.2',
   description='Scrapes data from Yahoo! Finane earnings calendar',
   author='Wenbo Yu',
   author_email='wenboyu2@gmail.com',
   url='https://github.com/wenboyu2/yahoo-earnings-calendar',
-  download_url='https://github.com/wenboyu2/yahoo-earnings-calendar/tarball/0.1',
+  download_url='https://github.com/wenboyu2/yahoo-earnings-calendar/tarball/0.2',
   keywords=['stock', 'earnings', 'yahoo', 'scrape', 'finance'],
   classifiers=[],
 )
