@@ -3,6 +3,7 @@ import json
 import logging
 import requests
 from lxml import html
+import six
 
 BASE_URL = 'http://finance.yahoo.com/calendar/earnings'
 
@@ -50,7 +51,7 @@ class YahooEarningsCalendar(object):
         logger.debug('Fetching earnings data for %s', date_str)
         dated_url = '{0}?day={1}'.format(BASE_URL, date_str)
         page = requests.get(dated_url)
-        page_content = page.content
+        page_content = page.text
         page_data_string = [row for row in page_content.split('\n') if row.startswith('root.App.main = ')][0][:-1]
         page_data_string = page_data_string.split('root.App.main = ', 1)[1]
         page_data_dict = json.loads(page_data_string)
@@ -101,5 +102,5 @@ if __name__ == '__main__':
     date_to = datetime.datetime.strptime(
         'May 8 2017  1:00PM', '%b %d %Y %I:%M%p')
     yec = YahooEarningsCalendar()
-    print yec.earnings_on(date_from)
-    print yec.earnings_between(date_from, date_to)
+    six.print(yec.earnings_on(date_from))
+    six.print(yec.earnings_between(date_from, date_to))
