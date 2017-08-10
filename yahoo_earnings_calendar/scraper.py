@@ -5,12 +5,13 @@ import requests
 from lxml import html
 
 BASE_URL = 'http://finance.yahoo.com/calendar/earnings'
+BASE_STOCK_URL = 'https://finance.yahoo.com/quote'
 
 # Logging config
 logger = logging.getLogger()
 handler = logging.StreamHandler()
 formatter = logging.Formatter(
-        '%(asctime)s %(name)-12s %(levelname)-8s %(message)s')
+    '%(asctime)s %(name)-12s %(levelname)-8s %(message)s')
 handler.setFormatter(formatter)
 logger.addHandler(handler)
 logger.setLevel(logging.ERROR)
@@ -20,6 +21,30 @@ class YahooEarningsCalendar(object):
     """
     This is the class for fetching earnings data from Yahoo! Finance
     """
+
+    def _get_data_dict(self, url):
+        page = requests.get(url)
+        page_content = page.content
+        page_data_string = [row for row in page_content.split(
+            '\n') if row.startswith('root.App.main = ')][0][:-1]
+        page_data_string = page_data_string.split('root.App.main = ', 1)[1]
+        return json.loads(page_data_string)
+
+    def get_next_earnings_date(self, symbol):
+        """Gets the next earnings date of symbol
+        Args:
+            symbol: A ticker symbol
+        Returns:
+            Unix timestamp of the next earnings date
+        Raises:
+            Exception: When symbol is invalid or earnings date is not available
+        """
+        url = '{0}/{1}'.format(BASE_STOCK_URL, symbol)
+        try:
+            page_data_dict = self._get_data_dict(url)
+            return page_data_dict['context']['dispatcher']['stores']['QuoteSummaryStore']['calendarEvents']['earnings']['earningsDate'][0]['raw']
+        except:
+            raise Exception('Invalid Symbol or Unavailable Earnings Date')
 
     def earnings_on(self, date):
         """Gets earnings calendar data from Yahoo! on a specific date.
@@ -49,11 +74,7 @@ class YahooEarningsCalendar(object):
         date_str = date.strftime('%Y-%m-%d')
         logger.debug('Fetching earnings data for %s', date_str)
         dated_url = '{0}?day={1}'.format(BASE_URL, date_str)
-        page = requests.get(dated_url)
-        page_content = page.content
-        page_data_string = [row for row in page_content.split('\n') if row.startswith('root.App.main = ')][0][:-1]
-        page_data_string = page_data_string.split('root.App.main = ', 1)[1]
-        page_data_dict = json.loads(page_data_string)
+        page_data_dict = self._get_data_dict(dated_url)
         return page_data_dict['context']['dispatcher']['stores']['CalendarStore']['calResults']['data']['rows']
 
     def earnings_between(self, from_date, to_date):
@@ -95,6 +116,7 @@ class YahooEarningsCalendar(object):
             current_date += delta
         return earnings_data
 
+
 if __name__ == '__main__':
     date_from = datetime.datetime.strptime(
         'May 5 2017  10:00AM', '%b %d %Y %I:%M%p')
@@ -103,3 +125,5 @@ if __name__ == '__main__':
     yec = YahooEarningsCalendar()
     print yec.earnings_on(date_from)
     print yec.earnings_between(date_from, date_to)
+    # Returns the next earnings date of BOX in Unix timestamp
+    print yec.get_next_earnings_date('box')

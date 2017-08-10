@@ -7,7 +7,9 @@ Scrapes Yahoo! Finance earnings calendar to get data for a specific date or a da
 pip install yahoo_earnings_calendar
 ```
 
-## Useage
+## Usage
+
+### Get earnings date information on a specific date or in a date range
 ```python
 import datetime
 from yahoo_earnings_calendar import YahooEarningsCalendar
@@ -21,8 +23,7 @@ print yec.earnings_on(date_from)
 print yec.earnings_between(date_from, date_to)
 ```
 
-
-## Data attributes
+#### Data attributes
 - companyshortname: Company Name
   - e.g., 20160606
 - ticker: Ticker
@@ -35,3 +36,12 @@ print yec.earnings_between(date_from, date_to)
 - epsactual: Reported EPS
 - epssurprisepct: Surprise (%)
 - gmtOffsetMilliSeconds: GMT Offset in MS
+
+### Get the next earnings date of a specific symbol
+```python
+import datetime
+from yahoo_earnings_calendar import YahooEarningsCalendar
+# Returns the next earnings date of BOX in Unix timestamp
+print yec.get_next_earnings_date('box')
+# 1508716800
+```
