@@ -1,8 +1,10 @@
+'''
+Yahoo! Earnings Calendar scraper
+'''
 import datetime
 import json
 import logging
 import requests
-from lxml import html
 
 BASE_URL = 'http://finance.yahoo.com/calendar/earnings'
 BASE_STOCK_URL = 'https://finance.yahoo.com/quote'
