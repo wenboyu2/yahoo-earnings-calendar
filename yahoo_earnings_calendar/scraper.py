@@ -77,7 +77,7 @@ class YahooEarningsCalendar(object):
         logger.debug('Fetching earnings data for %s', date_str)
         dated_url = '{0}?day={1}'.format(BASE_URL, date_str)
         page_data_dict = self._get_data_dict(dated_url)
-        return page_data_dict['context']['dispatcher']['stores']['CalendarStore']['calResults']['data']['rows']
+        return page_data_dict['context']['dispatcher']['stores']['ScreenerResultsStore']['results']['rows']
 
     def earnings_between(self, from_date, to_date):
         """Gets earnings calendar data from Yahoo! in a date range.
