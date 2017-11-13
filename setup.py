@@ -9,12 +9,12 @@ setup(
     install_requires=[
         'requests'
     ],
-    version='0.3',
+    version='0.3.1',
     description='Scrapes data from Yahoo! Finance earnings calendar',
     author='Wenbo Yu',
     author_email='wenboyu2@gmail.com',
     url='https://github.com/wenboyu2/yahoo-earnings-calendar',
-    download_url='https://github.com/wenboyu2/yahoo-earnings-calendar/tarball/0.3',
+    download_url='https://github.com/wenboyu2/yahoo-earnings-calendar/tarball/0.3.1',
     keywords=['stock', 'earnings', 'yahoo', 'scrape', 'finance'],
     classifiers=[],
 )
