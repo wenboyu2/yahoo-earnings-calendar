@@ -6,7 +6,7 @@ import json
 import logging
 import requests
 
-BASE_URL = 'http://finance.yahoo.com/calendar/earnings'
+BASE_URL = 'https://finance.yahoo.com/calendar/earnings'
 BASE_STOCK_URL = 'https://finance.yahoo.com/quote'
 
 # Logging config
@@ -26,7 +26,7 @@ class YahooEarningsCalendar(object):
 
     def _get_data_dict(self, url):
         page = requests.get(url)
-        page_content = page.content
+        page_content = page.content.decode(encoding='utf-8', errors='strict')
         page_data_string = [row for row in page_content.split(
             '\n') if row.startswith('root.App.main = ')][0][:-1]
         page_data_string = page_data_string.split('root.App.main = ', 1)[1]
