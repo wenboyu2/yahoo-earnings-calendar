@@ -1,1 +1,1 @@
-from scraper import YahooEarningsCalendar
+from .scraper import YahooEarningsCalendar

@@ -125,7 +125,7 @@ if __name__ == '__main__':
     date_to = datetime.datetime.strptime(
         'May 8 2017  1:00PM', '%b %d %Y %I:%M%p')
     yec = YahooEarningsCalendar()
-    print yec.earnings_on(date_from)
-    print yec.earnings_between(date_from, date_to)
+    print(yec.earnings_on(date_from))
+    print(yec.earnings_between(date_from, date_to))
     # Returns the next earnings date of BOX in Unix timestamp
-    print yec.get_next_earnings_date('box')
+    print(yec.get_next_earnings_date('box'))
