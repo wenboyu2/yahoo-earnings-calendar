@@ -13,7 +13,7 @@ pip install yahoo_earnings_calendar
 ```python
 import datetime
 from yahoo_earnings_calendar import YahooEarningsCalendar
-...
+
 date_from = datetime.datetime.strptime(
     'May 5 2017  10:00AM', '%b %d %Y %I:%M%p')
 date_to = datetime.datetime.strptime(
@@ -41,6 +41,8 @@ print(yec.earnings_between(date_from, date_to))
 ```python
 import datetime
 from yahoo_earnings_calendar import YahooEarningsCalendar
+
+yec = YahooEarningsCalendar()
 # Returns the next earnings date of BOX in Unix timestamp
 print(yec.get_next_earnings_date('box'))
 # 1508716800
