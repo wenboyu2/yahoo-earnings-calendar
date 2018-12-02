@@ -1,0 +1,14 @@
+language: python
+
+python:
+  - 3.6
+
+install:
+  - pip install pipenv
+  - pipenv sync -d
+
+script:
+  - pipenv run mamba --enable-coverage tests; coverage html --omit=*/site-packages/*,*_spec.py,*__init__.py
+
+after_success:
+  - pipenv run codecov

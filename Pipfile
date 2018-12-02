@@ -1,0 +1,17 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+requests = "*"
+
+[dev-packages]
+mamba = "*"
+expects = "*"
+mockito = "*"
+coverage = "*"
+codecov = "*"
+
+[requires]
+python_version = "3.7"

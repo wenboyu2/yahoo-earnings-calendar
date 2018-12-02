@@ -119,7 +119,7 @@ class YahooEarningsCalendar(object):
         return earnings_data
 
 
-if __name__ == '__main__':
+if __name__ == '__main__': # pragma: no cover
     date_from = datetime.datetime.strptime(
         'May 5 2017  10:00AM', '%b %d %Y %I:%M%p')
     date_to = datetime.datetime.strptime(
