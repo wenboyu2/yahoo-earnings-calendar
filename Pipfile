@@ -11,6 +11,7 @@ mamba = "*"
 expects = "*"
 mockito = "*"
 coverage = "*"
+codecov = "*"
 
 [requires]
 python_version = "3.7"
