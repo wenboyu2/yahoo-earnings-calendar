@@ -1,4 +1,7 @@
 # Yahoo! Earnings Calendar Scraper
+[![codecov](https://codecov.io/gh/wenboyu2/yahoo-earnings-calendar/branch/master/graph/badge.svg)](https://codecov.io/gh/wenboyu2/yahoo-earnings-calendar)
+[![Build Status](https://travis-ci.com/wenboyu2/yahoo-earnings-calendar.svg?branch=master)](https://travis-ci.com/wenboyu2/yahoo-earnings-calendar)
+
 Scrapes Yahoo! Finance earnings calendar to get data for a specific date or a date range.
 
 ## Installation
