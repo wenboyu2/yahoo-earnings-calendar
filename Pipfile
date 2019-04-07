@@ -12,6 +12,8 @@ expects = "*"
 mockito = "*"
 coverage = "*"
 codecov = "*"
+"autopep8" = "*"
+pylint = "*"
 
 [requires]
 python_version = "3.7"
