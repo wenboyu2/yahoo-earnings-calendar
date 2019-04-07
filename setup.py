@@ -12,7 +12,7 @@ setup(
     install_requires=[
         'requests'
     ],
-    version='0.4.0',
+    version='0.5.0',
     description='Scrapes data from Yahoo! Finance earnings calendar',
     long_description=long_description,
     long_description_content_type="text/markdown",

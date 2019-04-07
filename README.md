@@ -50,3 +50,16 @@ yec = YahooEarningsCalendar()
 print(yec.get_next_earnings_date('box'))
 # 1508716800
 ```
+
+### Set delay between requests
+
+By default, requests are delayed by 1.8 sec to avoid exceeding the 2000/hour rate limit. You can override the default delay by passing an argument to the `YahooEarningsCalendar` constructor.
+
+```py
+import datetime
+from yahoo_earnings_calendar import YahooEarningsCalendar
+
+my_custom_delay_s = 0.5
+
+yec = YahooEarningsCalendar(my_custom_delay_s)
+```

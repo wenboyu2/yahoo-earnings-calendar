@@ -5,9 +5,12 @@ import datetime
 import json
 import logging
 import requests
+import time
 
 BASE_URL = 'https://finance.yahoo.com/calendar/earnings'
 BASE_STOCK_URL = 'https://finance.yahoo.com/quote'
+RATE_LIMIT = 2000.0
+SLEEP_BETWEEN_REQUESTS_S = 60 * 60 / RATE_LIMIT
 
 # Logging config
 logger = logging.getLogger()
@@ -24,7 +27,11 @@ class YahooEarningsCalendar(object):
     This is the class for fetching earnings data from Yahoo! Finance
     """
 
+    def __init__(self, delay = SLEEP_BETWEEN_REQUESTS_S):
+        self.delay = delay
+
     def _get_data_dict(self, url):
+        time.sleep(self.delay)
         page = requests.get(url)
         page_content = page.content.decode(encoding='utf-8', errors='strict')
         page_data_string = [row for row in page_content.split(
