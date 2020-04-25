@@ -51,6 +51,15 @@ print(yec.get_next_earnings_date('box'))
 # 1508716800
 ```
 
+### Get all the available earnings data of a specific symbol
+```python
+from yahoo_earnings_calendar import YahooEarningsCalendar
+
+yec = YahooEarningsCalendar()
+    # Returns a list of all available earnings of BOX
+print(yec.get_earnings_of('box'))
+```
+
 ### Set delay between requests
 
 By default, requests are delayed by 1.8 sec to avoid exceeding the 2000/hour rate limit. You can override the default delay by passing an argument to the `YahooEarningsCalendar` constructor.

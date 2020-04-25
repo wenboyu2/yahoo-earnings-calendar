@@ -140,6 +140,21 @@ class YahooEarningsCalendar(object):
             current_date += delta
         return earnings_data
 
+    def get_earnings_of(self, symbol):
+        """Returns all the earnings dates of a symbol
+        Args:
+            symbol: A ticker symbol
+        Returns:
+            Array of all earnings dates with supplemental information
+        Raises:
+            Exception: When symbol is invalid or earnings date is not available
+        """
+        url = 'https://finance.yahoo.com/calendar/earnings?symbol={0}'.format(symbol)
+        try: 
+            page_data_dict = self._get_data_dict(url)
+            return page_data_dict["context"]["dispatcher"]["stores"]["ScreenerResultsStore"]["results"]["rows"]
+        except: 
+            raise Exception('Invalid Symbol or Unavailable Earnings Date')
 
 if __name__ == '__main__':  # pragma: no cover
     date_from = datetime.datetime.strptime(
@@ -151,3 +166,5 @@ if __name__ == '__main__':  # pragma: no cover
     print(yec.earnings_between(date_from, date_to))
     # Returns the next earnings date of BOX in Unix timestamp
     print(yec.get_next_earnings_date('box'))
+    # Returns a list of all available earnings of BOX
+    print(yec.get_earnings_of('box'))
