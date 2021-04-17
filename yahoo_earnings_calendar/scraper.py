@@ -35,8 +35,7 @@ class YahooEarningsCalendar(object):
         time.sleep(self.delay)
         page = requests.get(url)
 
-        print(page.status_code)
-        if page.status_code == 503:
+        if page.status_code != 200:
             raise Exception(f"{page.status_code} BAD CONNECTION")
 
         page_content = page.content.decode(encoding='utf-8', errors='strict')
@@ -60,7 +59,6 @@ class YahooEarningsCalendar(object):
             return page_data_dict['context']['dispatcher']['stores']['QuoteSummaryStore']['calendarEvents']['earnings']['earningsDate'][0]['raw']
         except Exception as e:
             print(e)
-            # raise Exception('Invalid Symbol or Unavailable Earnings Date')
 
     def earnings_on(self, date, offset=0, count=1):
         """Gets earnings calendar data from Yahoo! on a specific date.
@@ -161,7 +159,6 @@ class YahooEarningsCalendar(object):
             return page_data_dict["context"]["dispatcher"]["stores"]["ScreenerResultsStore"]["results"]["rows"]
         except Exception as e:
             print(e)
-            # raise Exception('Invalid Symbol or Unavailable Earnings Date')
 
 if __name__ == '__main__':  # pragma: no cover
     date_from = datetime.datetime.strptime(
