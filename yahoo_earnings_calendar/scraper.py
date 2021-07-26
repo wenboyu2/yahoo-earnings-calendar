@@ -33,7 +33,7 @@ class YahooEarningsCalendar(object):
 
     def _get_data_dict(self, url):
         time.sleep(self.delay)
-        page = requests.get(url)
+        page = requests.get(url, headers={'User-Agent': 'Custom'})
         page_content = page.content.decode(encoding='utf-8', errors='strict')
         page_data_string = [row for row in page_content.split(
             '\n') if row.startswith('root.App.main = ')][0][:-1]
