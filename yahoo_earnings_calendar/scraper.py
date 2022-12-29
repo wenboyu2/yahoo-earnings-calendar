@@ -6,6 +6,7 @@ import json
 import logging
 import requests
 import time
+from yfinance.data import decrypt_cryptojs_aes
 
 BASE_URL = 'https://finance.yahoo.com/calendar/earnings'
 BASE_STOCK_URL = 'https://finance.yahoo.com/quote'
@@ -33,12 +34,14 @@ class YahooEarningsCalendar(object):
 
     def _get_data_dict(self, url):
         time.sleep(self.delay)
-        page = requests.get(url)
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'}
+        page = requests.get(url, headers=headers)
         page_content = page.content.decode(encoding='utf-8', errors='strict')
         page_data_string = [row for row in page_content.split(
             '\n') if row.startswith('root.App.main = ')][0][:-1]
         page_data_string = page_data_string.split('root.App.main = ', 1)[1]
-        return json.loads(page_data_string)
+        return decrypt_cryptojs_aes(json.loads(page_data_string))
 
     def get_next_earnings_date(self, symbol):
         """Gets the next earnings date of symbol
@@ -52,7 +55,7 @@ class YahooEarningsCalendar(object):
         url = '{0}/{1}'.format(BASE_STOCK_URL, symbol)
         try:
             page_data_dict = self._get_data_dict(url)
-            return page_data_dict['context']['dispatcher']['stores']['QuoteSummaryStore']['calendarEvents']['earnings']['earningsDate'][0]['raw']
+            return page_data_dict['QuoteSummaryStore']['calendarEvents']['earnings']['earningsDate'][0]['raw']
         except:
             raise Exception('Invalid Symbol or Unavailable Earnings Date')
 
@@ -90,8 +93,7 @@ class YahooEarningsCalendar(object):
         logger.debug('Fetching earnings data for %s', date_str)
         dated_url = '{0}?day={1}&offset={2}&size={3}'.format(
             BASE_URL, date_str, offset, OFFSET_STEP)
-        page_data_dict = self._get_data_dict(dated_url)
-        stores_dict = page_data_dict['context']['dispatcher']['stores']
+        stores_dict = self._get_data_dict(dated_url)
         earnings_count = stores_dict['ScreenerCriteriaStore']['meta']['total']
 
         # Recursively fetch more earnings on this date
