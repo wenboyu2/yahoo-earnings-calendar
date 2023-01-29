@@ -5,8 +5,9 @@ import datetime
 import json
 import logging
 import requests
+from bs4 import BeautifulSoup
 import time
-from yfinance.data import decrypt_cryptojs_aes
+from yfinance.data import decrypt_cryptojs_aes_stores, TickerData
 
 BASE_URL = 'https://finance.yahoo.com/calendar/earnings'
 BASE_STOCK_URL = 'https://finance.yahoo.com/quote'
@@ -36,12 +37,16 @@ class YahooEarningsCalendar(object):
         time.sleep(self.delay)
         headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'}
-        page = requests.get(url, headers=headers)
-        page_content = page.content.decode(encoding='utf-8', errors='strict')
+        response = requests.get(url, headers=headers)
+        page_content = response.content.decode(encoding='utf-8', errors='strict')
+        soup = BeautifulSoup(response.content, "html.parser")
+        # Dirty hack to instantiate TickerData
+        td = TickerData('AAPL')
+        keys = td._get_decryption_keys_from_yahoo_js(soup)
         page_data_string = [row for row in page_content.split(
             '\n') if row.startswith('root.App.main = ')][0][:-1]
         page_data_string = page_data_string.split('root.App.main = ', 1)[1]
-        return decrypt_cryptojs_aes(json.loads(page_data_string))
+        return decrypt_cryptojs_aes_stores(json.loads(page_data_string), keys)
 
     def get_next_earnings_date(self, symbol):
         """Gets the next earnings date of symbol
